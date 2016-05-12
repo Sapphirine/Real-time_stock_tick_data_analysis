@@ -1,0 +1,17 @@
+#remove aws source, use archieve.ubuntu instead
+#sudo sed -i 's/us-east-1\.ec2\.//g' /etc/apt/sources.list
+#sudo apt-get install build-essential
+#sudo apt-get install default-jre
+
+wget http://apache.mirrors.pair.com/kafka/0.9.0.0/kafka_2.11-0.9.0.0.tgz
+tar -xzf kafka_2.11-0.9.0.0.tgz
+cd kafka_2.11-0.9.0.0
+
+bin/zookeeper-server-start.sh config/zookeeper.properties &
+bin/kafka-server-start.sh config/server.properties &
+
+bin/kafka-topics.sh --create --zookeeper 172.31.10.74:2181 --replication-factor 1 --partitions 1 --topic test
+bin/kafka-topics.sh --list --zookeeper 172.31.10.74:2181
+
+#check consumer_status
+bin/kafka-run-class.sh kafka.tools.ConsumerOffsetChecker --zookeeper 172.31.10.74:2181 --group test
