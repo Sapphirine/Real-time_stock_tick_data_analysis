@@ -7,11 +7,20 @@ wget http://apache.mirrors.pair.com/kafka/0.9.0.0/kafka_2.11-0.9.0.0.tgz
 tar -xzf kafka_2.11-0.9.0.0.tgz
 cd kafka_2.11-0.9.0.0
 
+#start ZK, if you deploy server other than local, please modify "zookeeper.properties" file
 bin/zookeeper-server-start.sh config/zookeeper.properties &
+
+#start Kafka, if you deploy server other than local, please modify "server.properties" file
+#1.	listeners=PLAINTEXT://:9092
+#-->listeners=PLAINTEXT://0.0.0.0:9092 (or specific interface ip instead of 0.0.0.0)
+#2.	zookeeper.connect=localhost:2181
+#-->zookeeper.connect=0.0.0.0:2181 (this should be the same with "zookeeper.properties")
 bin/kafka-server-start.sh config/server.properties &
 
+#create a topic for sending and receiving
 bin/kafka-topics.sh --create --zookeeper 172.31.10.74:2181 --replication-factor 1 --partitions 1 --topic test
+#list existed topic
 bin/kafka-topics.sh --list --zookeeper 172.31.10.74:2181
 
-#check consumer_status
+#check consumer_status, after you start a consumer
 bin/kafka-run-class.sh kafka.tools.ConsumerOffsetChecker --zookeeper 172.31.10.74:2181 --group test
