@@ -7,23 +7,25 @@ wget http://apache.mirrors.pair.com/kafka/0.9.0.0/kafka_2.11-0.9.0.0.tgz
 tar -xzf kafka_2.11-0.9.0.0.tgz
 cd kafka_2.11-0.9.0.0
 
-#after ZK and server start
+#after ZK,Kafka start
 #create topic
 bin/kafka-topics.sh --create --zookeeper 172.31.10.74:2181 --replication-factor 1 --partitions 1 --topic test
+#start a kafka-consumer, instead, you can use pyspark to read stream, please refer "spark-kafka_cmd"
 bin/kafka-console-consumer.sh --zookeeper 172.31.10.74:2181 --topic test --from-beginning
-
-#bin/kafka-console-consumer.sh --zookeeper 172.31.10.74:2181 --topic test --from-beginning
-#bin/kafka-console-producer.sh --broker-list 172.31.10.74:9092 --topic test
 
 ###########################################################################################
 now install spark, with script
 AWS_Ubuntu_Installation.rtf
+after you install spark, you can use spark streaming to be consumer
 ###########################################################################################
 
 #fisrt of all, silence info by:
 #http://stackoverflow.com/questions/25193488/how-to-turn-off-info-logging-in-pyspark
 
+#download "spark-streaming-kafka-assembly_2.10-1.6.1.jar" from maven project
+#You can use either "wget" or "curl" to download this jar file
 bin/spark-submit --jars spark-streaming-kafka-assembly_2.10-1.6.1.jar test.py 172.31.10.74:2181 test
 
-bin/spark-submit --jars spark-streaming-kafka-assembly_2.10-1.6.1.jar examples/src/main/python/streaming/direct_kafka_wordcount.py 172.31.10.74:2181 test
+#this is official pyspark streaming example
+#bin/spark-submit --jars spark-streaming-kafka-assembly_2.10-1.6.1.jar examples/src/main/python/streaming/direct_kafka_wordcount.py 172.31.10.74:2181 test
 
